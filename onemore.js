@@ -1,23 +1,49 @@
-<html>
-<head>
-    <title>onemore_test</title>
-    <meta http-equiv="Cache-Control" content="no-store" />
-    
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    
-    <script src="https://connectors.tableau.com/libs/tableauwdc-2.3.latest.js" type="text/javascript"></script>
-    <script src="../js/onemore.js" type="text/javascript"></script>
-</head>
+(function() {
+    // Create the connector object
+    var myConnector = tableau.makeConnector();
 
-<body>
-    <div class="container container-table">
-        <div class="row vertical-center-row">
-            <div class="text-center col-md-4 col-md-offset-4">
-                <button type = "button" id = "submitButton" class = "btn btn-success" style = "margin: 10px;">get upbit data!</button>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+    // Define the schema
+    myConnector.getSchema = function(schemaCallback) {
+        var cols = [ {
+            id: "candle_date_time_kst",
+            alias: "date",
+            dataType: tableau.dataTypeEnum.datetime
+        }];
+
+        var tableSchema = {
+            id: "upbit",
+            alias: "upbit 180days data",
+            columns: cols
+        };
+
+        schemaCallback([tableSchema]);
+    };
+
+    // Download the data
+    myConnector.getData = function(table, doneCallback) {
+        $.getJSON("https://raw.githubusercontent.com/junkoh74/webdataconnector/master/Examples/json/onemore.json", function(resp) {
+            var feat = resp,
+                tableData = [];
+
+            // Iterate over the JSON object
+            for (var i = 0, len = feat.length; i < len; i++) {
+                tableData.push({
+                    "candle_date_time_kst": feat[i].candle_date_time_kst,
+                });
+            }
+
+            table.appendRows(tableData);
+            doneCallback();
+        });
+    };
+
+    tableau.registerConnector(myConnector);
+
+    // Create event listeners for when the user submits the form
+    $(document).ready(function() {
+        $("#submitButton").click(function() {
+            tableau.connectionName = "upbit 180days data"; // This will be the data source name in Tableau
+            tableau.submit(); // This sends the connector object to Tableau
+        });
+    });
+})();
