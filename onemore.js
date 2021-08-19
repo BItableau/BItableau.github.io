@@ -7,7 +7,7 @@
         var cols = [ {
             id: "candle_date_time_kst",
             alias: "date",
-            dataType: tableau.dataTypeEnum.datetime
+            dataType: tableau.dataTypeEnum.date
         }];
 
         var tableSchema = {
