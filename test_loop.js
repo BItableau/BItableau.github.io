@@ -4,10 +4,10 @@
 
     // Define the schema
     myConnector.getSchema = function(schemaCallback) {
-		var cols = {
+		var cols = [{
             id: "market",
             dataType: tableau.dataTypeEnum.String
-        };
+        }];
 
         var tableSchema = {
             id: "upbit",
