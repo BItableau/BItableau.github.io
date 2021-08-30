@@ -26,7 +26,7 @@
 
     // Download the data
     myConnector.getData = function(table, doneCallback) {
-        $.getJSON("https://raw.githubusercontent.com/junkoh74/webdataconnector/master/Examples/json/test_loop.json", function(resp) {
+        $.getJSON("https://raw.githubusercontent.com/BItableau/BItableau.github.io/main/test_loop.json", function(resp) {
             var feat = resp,
                 tableData = [];
 
